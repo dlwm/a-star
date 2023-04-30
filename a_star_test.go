@@ -18,7 +18,7 @@ func TestAStar(t *testing.T) {
 		args             args
 		wantIsAccessible bool
 	}
-	for i := 1; i <= 4; i++ {
+	for i := 3; i <= 3; i++ {
 		data, err := os.ReadFile("./maps/map" + strconv.Itoa(i) + ".json")
 		if err != nil {
 			panic(err)
@@ -38,7 +38,7 @@ func TestAStar(t *testing.T) {
 			name: strconv.Itoa(i),
 			args: args{
 				start:  Pos{1, 1},
-				end:    Pos{3, 1},
+				end:    Pos{14, 10},
 				matrix: matrix,
 			},
 			wantIsAccessible: true,

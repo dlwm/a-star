@@ -57,8 +57,8 @@ func AStar(start Pos, end Pos, matrix [][]int) (isAccessible bool, search [][]in
 	// 开始搜索
 	for ; ; count++ {
 
-		//// 查看
-		//PrintSearch(search)
+		// 查看
+		PrintSearch(search)
 
 		// 判断是否到达目标点
 		if search[end.Y][end.X] != 99 {
@@ -72,8 +72,8 @@ func AStar(start Pos, end Pos, matrix [][]int) (isAccessible bool, search [][]in
 
 		// 排序
 		sort.Slice(liveList, func(i, j int) bool {
-			return math.Abs(float64(end.X-liveList[i].X))+math.Abs(float64(end.Y-liveList[i].Y)) <
-				math.Abs(float64(end.X-liveList[j].X))+math.Abs(float64(end.Y-liveList[j].Y))
+			return math.Abs(float64(end.X-liveList[i].X))+math.Abs(float64(end.Y-liveList[i].Y))+float64(search[liveList[i].Y][liveList[i].X]) <=
+				math.Abs(float64(end.X-liveList[j].X))+math.Abs(float64(end.Y-liveList[j].Y))+float64(search[liveList[j].Y][liveList[j].X])
 		})
 
 		livePos := liveList[0]
@@ -84,7 +84,9 @@ func AStar(start Pos, end Pos, matrix [][]int) (isAccessible bool, search [][]in
 			step := Pos{X: livePos.X + dirc.X, Y: livePos.Y + dirc.Y}
 
 			// 判断可达
-			if matrix[step.Y][step.X] == wall {
+			if step.Y < 0 || step.Y >= len(matrix) ||
+				step.X < 0 || step.X >= len(matrix[0]) ||
+				matrix[step.Y][step.X] == wall {
 				continue
 			}
 
@@ -106,10 +108,10 @@ func AStar(start Pos, end Pos, matrix [][]int) (isAccessible bool, search [][]in
 	}
 
 	isAccessible = true
-	//PrintMatrix(matrix)
-	//PrintSearch(search)
-	//PrintStep(end, matrix, search)
-	//fmt.Println("查找了 ", count, " 次")
+	PrintMatrix(matrix)
+	PrintSearch(search)
+	PrintStep(end, matrix, search)
+	fmt.Println("查找了 ", count, " 次")
 
 	return
 }
@@ -189,6 +191,10 @@ PATH:
 			break
 		}
 		for dire := up; dire <= right; dire++ {
+			if end.Y+direction[dire].Y < 0 || end.Y+direction[dire].Y >= len(matrix) ||
+				end.X+direction[dire].X < 0 || end.X+direction[dire].X >= len(matrix[0]) {
+				continue
+			}
 			if search[end.Y+direction[dire].Y][end.X+direction[dire].X] == value-1 {
 				value -= 1
 				end.Y += direction[dire].Y
